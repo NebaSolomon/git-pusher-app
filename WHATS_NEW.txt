@@ -12,3 +12,10 @@ Commit: this is great neba
 -------------------------------
 Describe what's new below 👇
 
+===============================
+Version: v1.2.1
+Date: 2025-10-11 03:00:55
+Commit: updated what's new text
+-------------------------------
+Describe what's new below 👇
+

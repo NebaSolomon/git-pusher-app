@@ -37,19 +37,24 @@ echo "🌐 Repo:    $REPO_URL"
 echo "🌿 Branch:  $BRANCH"
 echo
 
-# ---- WHATS_NEW.txt ----
+# ---- WHATS_NEW.txt (append verbatim if provided) ----
 NOTEFILE="WHATS_NEW.txt"
-echo "🗒️  Updating what's new note..."
-{
-  echo "==============================="
-  echo "Version: $VERSION"
-  echo "Date: $(date '+%Y-%m-%d %H:%M:%S')"
-  echo "Commit: $COMMIT_MSG"
-  echo "-------------------------------"
-  echo "Describe what's new below 👇"
-  echo
-} >> "$NOTEFILE"
-ok "Updated $NOTEFILE"
+if [[ -n "${WHATS_NEW_IN}" ]]; then
+  {
+    echo "==============================="
+    echo "Version: $VERSION"
+    echo "Date: $(date '+%Y-%m-%d %H:%M:%S')"
+    echo "Commit: $COMMIT_MSG"
+    echo "-------------------------------"
+    echo "What's new:"
+    printf '%s\n' "$WHATS_NEW_IN"
+    echo    # final blank line
+  } >> "$NOTEFILE"
+  ok "Updated $NOTEFILE"
+else
+  note "No what's-new text provided (skipping $NOTEFILE update)"
+fi
+
 
 # ---- Setup Git ----
 if [[ ! -f .gitignore ]]; then
