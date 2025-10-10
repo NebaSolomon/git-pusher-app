@@ -19,3 +19,19 @@ Commit: updated what's new text
 -------------------------------
 Describe what's new below 👇
 
+===============================
+Version: v1.2.1
+Date: 2025-10-11 03:28:17
+Commit: this must work
+-------------------------------
+What's new:
+What's New — v1.2.2
+
+• Added full dark theme for the GUI interface.
+• Improved layout spacing and modernized visuals.
+• Enhanced text contrast for better readability in dark mode.
+• Fixed minor alignment issues in entry fields and labels.
+• Improved success and error dialogs for clearer feedback.
+• Updated internal build scripts for easier EXE generation.
+• General performance and stability improvements.
+

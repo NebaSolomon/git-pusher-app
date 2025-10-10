@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Usage: push_it.sh <PROJECT_DIR> <VERSION> <REPO_URL> <BRANCH> [COMMIT_MSG]
+# Usage: push_it.sh <PROJECT_DIR> <VERSION> <REPO_URL> <BRANCH> [COMMIT_MSG] [WHATS_NEW]
 
 PROJECT_DIR="${1:-}"
 VERSION="${2:-v1.0}"
 REPO_URL="${3:-}"
 BRANCH="${4:-main}"
 COMMIT_MSG="${5:-${COMMIT_MSG:-}}"
+WHATS_NEW_IN="${6:-${WHATS_NEW:-}}"
 
 die(){ echo "❌ $*" >&2; exit 1; }
 ok(){ echo "✅ $*"; }
@@ -16,14 +17,10 @@ note(){ echo "ℹ️  $*"; }
 [[ -n "$REPO_URL"    ]] || die "Missing repo URL (e.g. https://github.com/user/repo.git)"
 [[ -n "$BRANCH"      ]] || die "Missing branch"
 
-# Default commit message if none provided
-if [[ -z "${COMMIT_MSG}" ]]; then
-  COMMIT_MSG="Git Pusher ${VERSION}"
-fi
+# Defaults
+[[ -z "${COMMIT_MSG}" ]] && COMMIT_MSG="Git Pusher ${VERSION}"
 
 command -v git >/dev/null 2>&1 || die "git not found"
-
-# Normalize Windows path to Unix for Git Bash
 if command -v cygpath >/dev/null 2>&1; then
   PROJECT_DIR="$(cygpath -u "$PROJECT_DIR" 2>/dev/null || echo "$PROJECT_DIR")"
 fi
@@ -48,15 +45,14 @@ if [[ -n "${WHATS_NEW_IN}" ]]; then
     echo "-------------------------------"
     echo "What's new:"
     printf '%s\n' "$WHATS_NEW_IN"
-    echo    # final blank line
+    echo
   } >> "$NOTEFILE"
   ok "Updated $NOTEFILE"
 else
   note "No what's-new text provided (skipping $NOTEFILE update)"
 fi
 
-
-# ---- Setup Git ----
+# ---- Git setup ----
 if [[ ! -f .gitignore ]]; then
   cat > .gitignore <<'GITIGNORE'
 build/
@@ -108,7 +104,7 @@ else
   note "origin/$BRANCH does not exist yet (first push)."
 fi
 
-# ---- Commit and Push ----
+# ---- Commit & Push ----
 git add -A
 git commit --allow-empty -m "$COMMIT_MSG" || true
 ok "Commit recorded: $COMMIT_MSG"
@@ -120,7 +116,7 @@ ok "Pushed branch '$BRANCH'"
 if git ls-remote --tags origin "refs/tags/$VERSION" | grep -q .; then
   note "Tag '$VERSION' exists on remote; skipping."
 else
-  if ! git show-ref --quiet --tags "refs/tags/$VERSION"; then
+  if ! git show-ref --quiet --tags "refs/tags/$VERSION" ; then
     git tag -a "$VERSION" -m "Release $VERSION"
     ok "Created tag '$VERSION'"
   fi
@@ -130,4 +126,4 @@ fi
 
 echo
 echo "🎉 Done: pushed '$PROJECT_DIR' → $REPO_URL ($BRANCH, $VERSION)"
-echo "📄 What's New note saved to $NOTEFILE"
+[[ -f "$NOTEFILE" ]] && echo "📄 What's New noted in $NOTEFILE"
