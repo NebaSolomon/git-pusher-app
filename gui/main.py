@@ -30,7 +30,8 @@ def push_to_git():
     version = version_var.get().strip() or "v1.0"
     repo    = repo_var.get().strip()
     branch  = branch_var.get().strip() or "main"
-    commit  = commit_var.get().strip()  # NEW
+    commit  = commit_var.get().strip()
+    whats_new = whats_new_box.get("1.0", "end").strip()
 
     if not project or not repo:
         messagebox.showerror("Error", "Please provide project folder and repo URL.")
@@ -46,8 +47,8 @@ def push_to_git():
         messagebox.showerror("Error", f"push_it.sh not found at:\n{sh_script}")
         return
 
-    # Pass commit message as 5th argument (quote safely)
-    args = [
+    # Build command. We pass commit message as arg5; what's-new as ENV to support multiline
+    cmd = [
         bash_exe, "-c",
         f"bash {shlex.quote(sh_script)} "
         f"{shlex.quote(project)} {shlex.quote(version)} "
@@ -55,17 +56,24 @@ def push_to_git():
         f"{shlex.quote(commit)}"
     ]
 
+    env = os.environ.copy()
+    if whats_new:
+        env["WHATS_NEW"] = whats_new
+
     try:
-        subprocess.run(args, check=True)
+        subprocess.run(cmd, check=True, env=env)
         human_commit = commit if commit else f"Git Pusher {version}"
-        messagebox.showinfo("Success", f"Commit:\n{human_commit}\n\nPushed to:\n{repo}\nBranch: {branch}\nTag: {version}")
+        msg = f"Commit:\n{human_commit}\n\nPushed to:\n{repo}\nBranch: {branch}\nTag: {version}"
+        if whats_new:
+            msg += f"\n\nWhat's new saved to WHATS_NEW.txt"
+        messagebox.showinfo("Success", msg)
     except subprocess.CalledProcessError as e:
         messagebox.showerror("Failed", f"Push failed.\n\n{e}")
 
 # ---- UI ----
 root = tk.Tk()
 root.title("Git Pusher App")
-root.geometry("560x420")
+root.geometry("700x560")
 root.resizable(False, False)
 
 # Window/EXE icon
@@ -81,32 +89,33 @@ padx = 18
 # Project
 tk.Label(root, text="Project Folder:").pack(anchor="w", padx=padx, pady=(16,5))
 project_var = tk.StringVar()
-tk.Entry(root, textvariable=project_var, width=68).pack(padx=padx)
+tk.Entry(root, textvariable=project_var, width=82).pack(padx=padx)
 tk.Button(root, text="Browse", command=browse_folder).pack(padx=padx, pady=6)
 
-# Version
+# Version / Repo / Branch
 tk.Label(root, text="Version (e.g. v1.0):").pack(anchor="w", padx=padx)
 version_var = tk.StringVar()
-tk.Entry(root, textvariable=version_var, width=30).pack(padx=padx, pady=6)
+tk.Entry(root, textvariable=version_var, width=32).pack(padx=padx, pady=6)
 
-# Repo
 tk.Label(root, text="Repository URL:").pack(anchor="w", padx=padx)
 repo_var = tk.StringVar()
-tk.Entry(root, textvariable=repo_var, width=68).pack(padx=padx, pady=6)
+tk.Entry(root, textvariable=repo_var, width=82).pack(padx=padx, pady=6)
 
-# Branch
 tk.Label(root, text="Branch (default main):").pack(anchor="w", padx=padx)
 branch_var = tk.StringVar()
-tk.Entry(root, textvariable=branch_var, width=30).pack(padx=padx, pady=6)
+tk.Entry(root, textvariable=branch_var, width=32).pack(padx=padx, pady=6)
 
-# Commit message (NEW)
+# Commit message
 tk.Label(root, text="Commit message:").pack(anchor="w", padx=padx)
 commit_var = tk.StringVar()
-commit_box = tk.Entry(root, textvariable=commit_var, width=68)
-commit_box.pack(padx=padx, pady=6)
-commit_box.insert(0, "")  # leave blank by default
+tk.Entry(root, textvariable=commit_var, width=82).pack(padx=padx, pady=6)
+
+# What's new (multiline)
+tk.Label(root, text="What's new:").pack(anchor="w", padx=padx)
+whats_new_box = tk.Text(root, height=10, width=82)
+whats_new_box.pack(padx=padx, pady=6)
 
 # Action
-tk.Button(root, text="🚀 Push to Git", width=22, command=push_to_git).pack(pady=18)
+tk.Button(root, text="🚀 Push to Git", width=24, command=push_to_git).pack(pady=16)
 
 root.mainloop()
