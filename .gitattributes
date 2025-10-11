@@ -1,0 +1,4 @@
+*.py linguist-detectable=true
+*.sh linguist-detectable=true
+dist/* linguist-vendored
+build/* linguist-vendored

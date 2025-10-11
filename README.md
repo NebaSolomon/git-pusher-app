@@ -1,3 +1,9 @@
+![Python](https://img.shields.io/badge/Python-3.13-blue)
+![Tkinter](https://img.shields.io/badge/GUI-Tkinter-informational)
+![Shell](https://img.shields.io/badge/Shell-Bash-green)
+![Packager](https://img.shields.io/badge/PyInstaller-onefile-success)
+![Platform](https://img.shields.io/badge/Windows-10/11-lightgrey)
+
 # 🚀 Git Pusher App  
 
 A simple **GUI tool** that lets you push any project folder to **any GitHub repository** — no command line needed.  
@@ -80,3 +86,35 @@ Click **🚀 Push to Git** and the app will:
 ## 🧑‍💻 About  
 Created by **[Neba Solomon](https://github.com/NebaSolomon)**  
 > A lightweight productivity tool to make Git simple for everyone.  
+
+---
+
+## Tech Stack
+- **Python (Tkinter)** – GUI application
+- **Shell / Bash** – Git automation script
+- **PyInstaller** – build single-file Windows EXE
+- **Git & GitHub** – versioning, tags, releases
+- **Pillow (optional)** – icon handling during build
+- **Windows (Git for Windows / Git Bash)**
+
+
+## Architecture
+
+
+- The EXE bundles the GUI; the **shell script stays external**, so you can update it without rebuilding.
+- “What’s New” text is passed via env var and appended to `WHATS_NEW.txt` with timestamp.
+
+
+## Screenshots
+> Replace with an actual screenshot from your app.
+
+![App Screenshot](https://via.placeholder.com/1000x520?text=Git+Pusher+App+Dark+UI)
+
+
+## How to Use
+1. Open **GitPusher.exe** (Windows 10/11).
+2. Click **Browse** to select your project folder.
+3. Fill **Version**, **Repository URL**, **Branch**, **Commit message**.
+4. (Optional) Add **What’s New** notes.
+5. Click **🚀 Push to Git**.
+
