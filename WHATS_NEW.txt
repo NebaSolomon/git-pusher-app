@@ -35,3 +35,40 @@ What's New — v1.2.2
 • Updated internal build scripts for easier EXE generation.
 • General performance and stability improvements.
 
+===============================
+Version: v1.3.0
+Date: 2025-01-27 12:00:00
+Commit: Git Pusher App v1.3.0 – Added drag and drop support
+-------------------------------
+What's new:
+What's New — v1.3.0
+
+• 🎯 NEW: Drag and Drop Support - Simply drag folders from Windows Explorer directly onto the app!
+• 📁 Smart Folder Detection - Dropping files will automatically use their parent directory
+• 🎨 Visual Feedback - Drop zones highlight when you drag items over them
+• 💡 User Tips - Added helpful hints about drag and drop functionality
+• 🔧 Enhanced Error Handling - Better validation for dropped paths
+• 📦 Updated Dependencies - Added tkinterdnd2 for drag and drop functionality
+• 🚀 Improved User Experience - Much faster project folder selection workflow
+
+===============================
+Version: v1.3
+Date: 2025-10-17 00:57:28
+Commit: 1.3 version update
+-------------------------------
+What's new:
+Version: v1.3.0
+Date: 2025-10-17
+Commit: Git Pusher App v1.3.0 – Added drag and drop support
+-------------------------------
+What's new:
+What's New — v1.3.0
+
+• 🎯 NEW: Drag and Drop Support - Simply drag folders from Windows Explorer directly onto the app!
+• 📁 Smart Folder Detection - Dropping files will automatically use their parent directory
+• 🎨 Visual Feedback - Drop zones highlight when you drag items over them
+• 💡 User Tips - Added helpful hints about drag and drop functionality
+• 🔧 Enhanced Error Handling - Better validation for dropped paths
+• 📦 Updated Dependencies - Added tkinterdnd2 for drag and drop functionality
+• 🚀 Improved User Experience - Much faster project folder selection workflow
+

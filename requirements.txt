@@ -1,0 +1,3 @@
+# Git Pusher App Dependencies
+tkinterdnd2>=0.3.0
+pyinstaller>=5.0

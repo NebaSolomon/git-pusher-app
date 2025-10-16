@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import subprocess, os, sys, shlex, shutil
+from tkinterdnd2 import DND_FILES, TkinterDnD
 
 # ---------- paths & helpers ----------
 def resource_path(*parts):
@@ -24,8 +25,50 @@ def find_git_bash():
 def browse_folder():
     folder = filedialog.askdirectory()
     if folder:
-        project_var.set(folder)
+        set_project_folder(folder)
+
+def set_project_folder(folder_path):
+    """Set the project folder and validate it"""
+    if folder_path and os.path.isdir(folder_path):
+        project_var.set(folder_path)
         clear_error("project")
+        set_status(f"Project folder set: {os.path.basename(folder_path)}", "ok")
+    else:
+        show_error("project", "Invalid folder path")
+        set_status("Invalid folder - please select a valid directory", "error")
+
+def handle_drag_enter(event):
+    """Handle drag enter events - visual feedback"""
+    entry_project.configure(style="DragOver.TEntry")
+    drag_hint.configure(text="📁 Drop folder here!")
+
+def handle_drag_leave(event):
+    """Handle drag leave events - reset visual feedback"""
+    entry_project.configure(style="TEntry")
+    drag_hint.configure(text="💡 Tip: Drag and drop a folder here!")
+
+def handle_drop(event):
+    """Handle drag and drop events"""
+    # Reset visual feedback
+    entry_project.configure(style="TEntry")
+    drag_hint.configure(text="💡 Tip: Drag and drop a folder here!")
+    
+    files = root.tk.splitlist(event.data)
+    if files:
+        # Take the first dropped item
+        dropped_path = files[0]
+        # Remove quotes if present
+        dropped_path = dropped_path.strip('"\'')
+        
+        if os.path.isdir(dropped_path):
+            set_project_folder(dropped_path)
+        elif os.path.isfile(dropped_path):
+            # If a file is dropped, use its parent directory
+            parent_dir = os.path.dirname(dropped_path)
+            set_project_folder(parent_dir)
+        else:
+            show_error("project", "Invalid path - please drop a folder")
+            set_status("Please drop a valid folder, not a file", "error")
 
 def push_to_git(event=None):
     project = project_var.get().strip()
@@ -101,11 +144,15 @@ WARN    = "#ffb454"
 ERR     = "#ff6b6b"
 OK      = "#49c774"
 
-root = tk.Tk()
+root = TkinterDnD.Tk()
 root.title("Git Pusher App")
 root.geometry("860x620")
 root.configure(bg=BG)
 root.resizable(False, False)
+
+# Enable drag and drop for the entire window
+root.drop_target_register(DND_FILES)
+root.dnd_bind('<<Drop>>', handle_drop)
 
 # icon
 try:
@@ -153,6 +200,10 @@ for c in (card1, card2, card3):
 # --- Card 1: Project & Repo ---
 ttk.Label(card1, text="Project & Repository", style="Header.TLabel").grid(row=0, column=0, columnspan=3, sticky="w", padx=12, pady=(10, 6))
 
+# Add drag and drop hint
+drag_hint = ttk.Label(card1, text="💡 Tip: Drag and drop a folder here!", style="Hint.TLabel")
+drag_hint.grid(row=0, column=3, sticky="e", padx=12, pady=(10, 6))
+
 def labeled_entry(frame, label, var, width=64, col=0, row=0, placeholder=""):
     ttk.Label(frame, text=label).grid(row=row, column=col, sticky="w", padx=12, pady=6)
     e = ttk.Entry(frame, textvariable=var, width=width)
@@ -165,11 +216,18 @@ def labeled_entry(frame, label, var, width=64, col=0, row=0, placeholder=""):
 
 project_var = tk.StringVar()
 entry_project = labeled_entry(card1, "Project Folder *", project_var, width=68, row=1)
+
+# Enable drag and drop for the project entry field
+entry_project.drop_target_register(DND_FILES)
+entry_project.dnd_bind('<<Drop>>', handle_drop)
+entry_project.dnd_bind('<<DragEnter>>', handle_drag_enter)
+entry_project.dnd_bind('<<DragLeave>>', handle_drag_leave)
+
 def set_project_from_dialog():
     folder = filedialog.askdirectory()
     if folder:
-        project_var.set(folder)
-        clear_error("project")
+        set_project_folder(folder)
+
 ttk.Button(card1, text="Browse…", command=set_project_from_dialog).grid(row=1, column=2, padx=6, pady=6)
 
 repo_var = tk.StringVar()
@@ -234,6 +292,10 @@ def clear_error(field):
 # style for invalid entries
 style.configure("Invalid.TEntry", fieldbackground="#3a2530", foreground=FG)
 style.map("Invalid.TEntry", fieldbackground=[("focus", "#3a2530")])
+
+# style for drag over state
+style.configure("DragOver.TEntry", fieldbackground="#2a3a4a", foreground=FG, bordercolor=ACCENT)
+style.map("DragOver.TEntry", fieldbackground=[("focus", "#2a3a4a")])
 
 # shortcuts
 root.bind("<Control-Return>", push_to_git)

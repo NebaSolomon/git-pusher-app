@@ -12,7 +12,7 @@ if not exist "%PROJ%venv\" (
 
 REM ===== Install deps =====
 "%PY%" -m pip install --upgrade pip
-"%PY%" -m pip install pyinstaller
+"%PY%" -m pip install pyinstaller tkinterdnd2
 
 REM ===== Build .exe (onefile, no console, include push_it.sh) =====
 REM Note: --add-data "src;dst" uses semicolon on Windows
