@@ -117,9 +117,8 @@ Created by **[Neba Solomon](https://github.com/NebaSolomon)**
 
 
 ## Screenshots
-> Replace with an actual screenshot from your app.
-
-![App Screenshot](https://via.placeholder.com/1000x520?text=Git+Pusher+App+Dark+UI)
+<img width="1126" height="980" alt="image" src="https://github.com/user-attachments/assets/0508302b-f8f2-4a7a-9628-2059c520a502" />
+<img width="1125" height="940" alt="image" src="https://github.com/user-attachments/assets/b8c00f0a-440f-4c76-9394-0e987ec30ee2" />
 
 
 ## How to Use
