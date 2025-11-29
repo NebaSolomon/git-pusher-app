@@ -2,8 +2,14 @@
 set -euo pipefail
 
 # ===== Config =====
-WIN_TARGET_DEFAULT='C:\Users\LEGION\Desktop\productivity\created apps\git-pusher-app'
-WIN_TARGET="${1:-$WIN_TARGET_DEFAULT}"
+# Target directory (required as first argument)
+# Usage: ./bootstrap_git_pusher_app.sh "C:\path\to\target"
+if [ -z "${1:-}" ]; then
+  echo "Usage: $0 <target_directory>"
+  echo "Example: $0 'C:\\Users\\YourName\\Desktop\\git-pusher-app'"
+  exit 1
+fi
+WIN_TARGET="$1"
 
 # Convert Windows path -> Unix for Git Bash
 if command -v cygpath >/dev/null 2>&1; then

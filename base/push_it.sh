@@ -93,12 +93,43 @@ fi
 
 # ---- Sync with Remote ----
 if git ls-remote --heads origin "$BRANCH" | grep -q .; then
-  note "Syncing with origin/$BRANCH (rebase)"
-  if ! git pull --rebase --autostash origin "$BRANCH"; then
-    note "Rebase failed; retry merge (prefer local), allowing unrelated histories"
-    git rebase --abort || true
-    git fetch origin "$BRANCH" || true
-    git merge -X ours --allow-unrelated-histories origin/"$BRANCH" -m "Merge origin/$BRANCH (prefer local)"
+  note "Syncing with origin/$BRANCH"
+  
+  # Fetch latest changes
+  git fetch origin "$BRANCH"
+  
+  # Check if branches have diverged
+  LOCAL=$(git rev-parse HEAD 2>/dev/null || echo "")
+  REMOTE=$(git rev-parse "origin/$BRANCH" 2>/dev/null || echo "")
+  BASE=$(git merge-base HEAD "origin/$BRANCH" 2>/dev/null || echo "")
+  
+  if [ -z "$LOCAL" ] || [ -z "$REMOTE" ]; then
+    note "Cannot determine branch state, attempting safe merge..."
+    if ! git merge --no-ff "origin/$BRANCH" -m "Merge origin/$BRANCH"; then
+      die "Merge conflict detected. Please resolve conflicts manually before pushing."
+    fi
+  elif [ "$LOCAL" = "$REMOTE" ]; then
+    note "Already up to date with origin/$BRANCH"
+  elif [ "$LOCAL" = "$BASE" ]; then
+    note "Local branch is behind, fast-forwarding..."
+    if ! git merge --ff-only "origin/$BRANCH"; then
+      die "Fast-forward failed. Please pull manually."
+    fi
+  elif [ "$REMOTE" = "$BASE" ]; then
+    note "Local branch is ahead, will push changes"
+  else
+    # Branches have diverged - require safe merge
+    note "⚠️  WARNING: Branches have diverged!"
+    LOCAL_COUNT=$(git rev-list --count HEAD ^origin/$BRANCH 2>/dev/null || echo "?")
+    REMOTE_COUNT=$(git rev-list --count origin/$BRANCH ^HEAD 2>/dev/null || echo "?")
+    note "Local commits ahead: $LOCAL_COUNT"
+    note "Remote commits ahead: $REMOTE_COUNT"
+    note "Attempting safe merge (will fail if conflicts exist)..."
+    
+    # Try merge without force strategies
+    if ! git merge --no-ff "origin/$BRANCH" -m "Merge origin/$BRANCH"; then
+      die "Merge conflict detected. Please resolve conflicts manually before pushing."
+    fi
   fi
 else
   note "origin/$BRANCH does not exist yet (first push)."

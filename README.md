@@ -1,5 +1,5 @@
 ![Python](https://img.shields.io/badge/Python-3.13-blue)
-![Tkinter](https://img.shields.io/badge/GUI-Tkinter-informational)
+![CustomTkinter](https://img.shields.io/badge/GUI-CustomTkinter-informational)
 ![Shell](https://img.shields.io/badge/Shell-Bash-green)
 ![Packager](https://img.shields.io/badge/PyInstaller-onefile-success)
 ![Platform](https://img.shields.io/badge/Windows-10/11-lightgrey)
@@ -16,10 +16,13 @@ A simple **GUI tool** that lets you push any project folder to **any GitHub repo
 ## ✨ Features  
 - Push any local folder to any GitHub repo  
 - Enter custom commit messages and version tags  
-- Add “What’s New” notes for each release  
+- Add "What's New" notes for each release  
 - Auto-creates missing `.git` or `.gitignore` files  
 - Works with new or existing repositories  
+- Modern CustomTkinter UI with rounded corners and smooth animations
 - Built-in dark theme for comfortable use  
+- Secure input validation and authentication checks
+- Safe merge strategy (prevents data loss)
 - One-click EXE — no setup required  
 
 ---
@@ -90,19 +93,27 @@ Created by **[Neba Solomon](https://github.com/NebaSolomon)**
 ---
 
 ## Tech Stack
-- **Python (Tkinter)** – GUI application
+- **Python (CustomTkinter)** – Modern GUI application with rounded UI
 - **Shell / Bash** – Git automation script
 - **PyInstaller** – build single-file Windows EXE
 - **Git & GitHub** – versioning, tags, releases
-- **Pillow (optional)** – icon handling during build
 - **Windows (Git for Windows / Git Bash)**
 
 
 ## Architecture
 
-
 - The EXE bundles the GUI; the **shell script stays external**, so you can update it without rebuilding.
-- “What’s New” text is passed via env var and appended to `WHATS_NEW.txt` with timestamp.
+- "What's New" text is passed via env var and appended to `WHATS_NEW.txt` with timestamp.
+- Modern CustomTkinter UI provides a professional, rounded interface with smooth animations.
+
+## Security Features
+
+- **URL Validation** – Prevents command injection via malicious repository URLs
+- **Path Validation** – Blocks access to system directories
+- **Input Sanitization** – All user inputs are validated and sanitized
+- **Authentication Verification** – Checks repository access before attempting push
+- **Safe Merge Strategy** – Prevents data loss from force merges, requires manual conflict resolution
+- **Timeout Protection** – Prevents UI freezing from hanging operations
 
 
 ## Screenshots

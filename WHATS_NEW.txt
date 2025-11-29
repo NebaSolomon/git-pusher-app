@@ -72,3 +72,20 @@ What's New — v1.3.0
 • 📦 Updated Dependencies - Added tkinterdnd2 for drag and drop functionality
 • 🚀 Improved User Experience - Much faster project folder selection workflow
 
+===============================
+Version: v1.4
+Date: 2025-11-29 16:53:17
+Commit: ui ans some security updated
+-------------------------------
+What's new:
+Version Update Highlights:
+
+🎨 Design Refresh
+Complete UI overhaul with modern ServiceToon-inspired design featuring dark blue-green theme and teal glowing accents.
+
+🛡️ Security Improvements
+Added comprehensive input validation, secure Git operations, and authentication checks for safer repository management.
+
+🎯 UX Enhancements
+Redesigned layout with scrollable cards area and fixed action button for improved accessibility and workflow efficiency.
+
